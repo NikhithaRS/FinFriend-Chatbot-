@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-export default {
+module.exports = {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
@@ -16,6 +16,12 @@ export default {
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
       },
+      backgroundColor: {
+        'dark': '#1a1a1a',
+      },
+      aspectRatio: {
+        'video': '16 / 9'
+      }
     },
   },
   plugins: [],

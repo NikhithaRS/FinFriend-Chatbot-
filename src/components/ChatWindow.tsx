@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { Send, Mic } from 'lucide-react';
+import { Send, Mic, Sparkles } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { MessageBubble } from './MessageBubble';
 import { TypingIndicator } from './TypingIndicator';
 
@@ -18,12 +19,15 @@ const languages = {
   'te-IN': "నేను మీ AI ఆర్థిక సహాయకుడిని. నేను మీకు ఎలా సహాయం చేయగలను?"
 };
 
-export function ChatWindow() {
+interface ChatWindowProps {
+  selectedLanguage: string;
+}
+
+export function ChatWindow({ selectedLanguage }: ChatWindowProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isListening, setIsListening] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState('en-US');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const getBotResponse = async (userInput: string, language: string) => {
@@ -149,55 +153,113 @@ export function ChatWindow() {
   };
 
   return (
-    <div className="flex flex-col h-[80vh]">
-      <div className="flex items-center justify-between p-4 border-b border-gray-200">
-        <h1 className="text-xl font-semibold">Chat</h1>
-        <select
-          value={selectedLanguage}
-          onChange={(e) => setSelectedLanguage(e.target.value)}
-          className="px-3 py-1 border border-gray-300 rounded-md"
-        >
-          <option value="en-US">English</option>
-          <option value="hi-IN">हिंदी</option>
-          <option value="kn-IN">ಕನ್ನಡ</option>
-          <option value="ta-IN">தமிழ்</option>
-          <option value="te-IN">తెలుగు</option>
-        </select>
-      </div>
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.map((message) => (
-          <MessageBubble key={message.id} message={message} />
-        ))}
-        {isTyping && <TypingIndicator />}
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="flex flex-col h-[calc(100vh-8rem)] bg-gradient-to-b from-blue-50 to-white"
+    >
+      {/* Welcome Message */}
+      <AnimatePresence>
+        {messages.length === 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="text-center p-8"
+          >
+            <Sparkles className="w-12 h-12 text-blue-500 mx-auto mb-4" />
+            <h2 className="text-2xl font-semibold text-gray-800 mb-2">
+              Welcome to FinFriend
+            </h2>
+            <p className="text-gray-600">
+              Your AI-powered financial assistant is ready to help
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Chat messages area */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-custom">
+        <AnimatePresence>
+          {messages.map((message, index) => (
+            <motion.div
+              key={message.id}
+              initial={{ opacity: 0, x: message.sender === 'user' ? 20 : -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ 
+                duration: 0.2,
+                delay: index * 0.1
+              }}
+              className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+            >
+              <MessageBubble message={message} />
+            </motion.div>
+          ))}
+          {isTyping && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <TypingIndicator />
+            </motion.div>
+          )}
+        </AnimatePresence>
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="border-t border-gray-200 p-4">
-        <div className="flex items-center gap-2">
-          <input
-            type="text"
-            value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-            placeholder="Type your message..."
-            className="flex-1 px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
-          <button
-            onClick={handleVoiceInput}
-            className={`p-2 rounded-full hover:bg-gray-100 transition-colors ${
-              isListening ? 'bg-blue-100' : ''
-            }`}
-          >
-            <Mic className="w-6 h-6 text-gray-600" />
-          </button>
-          <button
-            onClick={handleSendMessage}
-            className="p-2 rounded-full bg-blue-500 hover:bg-blue-600 transition-colors"
-          >
-            <Send className="w-6 h-6 text-white" />
-          </button>
+      {/* Input area with glass effect */}
+      <motion.div 
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        className="border-t border-gray-200/50 bg-white/80 backdrop-blur-lg p-6 shadow-lg"
+      >
+        <div className="max-w-4xl mx-auto">
+          <div className="flex items-center gap-3 bg-white p-2 rounded-2xl shadow-sm">
+            <input
+              type="text"
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+              placeholder="Ask me anything about finance..."
+              className="flex-1 px-6 py-3 bg-transparent text-gray-700 placeholder-gray-400 focus:outline-none"
+            />
+            <div className="flex items-center gap-2 px-2">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleVoiceInput}
+                className={`p-3 rounded-xl transition-all duration-200 ${
+                  isListening 
+                    ? 'bg-blue-100 text-blue-600 shadow-md ring-2 ring-blue-200' 
+                    : 'hover:bg-gray-100 text-gray-600'
+                }`}
+              >
+                <Mic className="w-5 h-5" />
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleSendMessage}
+                className="p-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white transition-all duration-200 shadow-md"
+              >
+                <Send className="w-5 h-5" />
+              </motion.button>
+            </div>
+          </div>
+          {isListening && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-sm text-blue-600 mt-2 text-center"
+            >
+              Listening...
+            </motion.div>
+          )}
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

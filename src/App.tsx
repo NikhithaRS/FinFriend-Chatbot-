@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useState } from 'react';
 import { MainLayout } from './components/MainLayout';
@@ -43,6 +44,21 @@ function App() {
         </Routes>
       </MainLayout>
     </Router>
+=======
+import { MainLayout } from './components/MainLayout';
+import { ChatWindow } from './components/ChatWindow';
+
+function App() {
+  return (
+    <MainLayout>
+      <div className="flex flex-col h-full">
+        <div className="p-4 border-b border-gray-200">
+          <h1 className="text-2xl font-semibold text-gray-800">FinFriend</h1>
+        </div>
+        <ChatWindow />
+      </div>
+    </MainLayout>
+>>>>>>> 4e3a27c400f15b453e8f827c4f84a02e3a76f6e3
   );
 }
 

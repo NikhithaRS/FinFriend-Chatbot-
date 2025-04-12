@@ -1,6 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
+<<<<<<< HEAD
 import { Send, Mic, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+=======
+import { Send, Mic } from 'lucide-react';
+>>>>>>> 4e3a27c400f15b453e8f827c4f84a02e3a76f6e3
 import { MessageBubble } from './MessageBubble';
 import { TypingIndicator } from './TypingIndicator';
 
@@ -19,15 +23,23 @@ const languages = {
   'te-IN': "నేను మీ AI ఆర్థిక సహాయకుడిని. నేను మీకు ఎలా సహాయం చేయగలను?"
 };
 
+<<<<<<< HEAD
 interface ChatWindowProps {
   selectedLanguage: string;
 }
 
 export function ChatWindow({ selectedLanguage }: ChatWindowProps) {
+=======
+export function ChatWindow() {
+>>>>>>> 4e3a27c400f15b453e8f827c4f84a02e3a76f6e3
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isListening, setIsListening] = useState(false);
+<<<<<<< HEAD
+=======
+  const [selectedLanguage, setSelectedLanguage] = useState('en-US');
+>>>>>>> 4e3a27c400f15b453e8f827c4f84a02e3a76f6e3
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const getBotResponse = async (userInput: string, language: string) => {
@@ -153,6 +165,7 @@ export function ChatWindow({ selectedLanguage }: ChatWindowProps) {
   };
 
   return (
+<<<<<<< HEAD
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -261,5 +274,57 @@ export function ChatWindow({ selectedLanguage }: ChatWindowProps) {
         </div>
       </motion.div>
     </motion.div>
+=======
+    <div className="flex flex-col h-[80vh]">
+      <div className="flex items-center justify-between p-4 border-b border-gray-200">
+        <h1 className="text-xl font-semibold">Chat</h1>
+        <select
+          value={selectedLanguage}
+          onChange={(e) => setSelectedLanguage(e.target.value)}
+          className="px-3 py-1 border border-gray-300 rounded-md"
+        >
+          <option value="en-US">English</option>
+          <option value="hi-IN">हिंदी</option>
+          <option value="kn-IN">ಕನ್ನಡ</option>
+          <option value="ta-IN">தமிழ்</option>
+          <option value="te-IN">తెలుగు</option>
+        </select>
+      </div>
+      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {messages.map((message) => (
+          <MessageBubble key={message.id} message={message} />
+        ))}
+        {isTyping && <TypingIndicator />}
+        <div ref={messagesEndRef} />
+      </div>
+
+      <div className="border-t border-gray-200 p-4">
+        <div className="flex items-center gap-2">
+          <input
+            type="text"
+            value={inputText}
+            onChange={(e) => setInputText(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+            placeholder="Type your message..."
+            className="flex-1 px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+          <button
+            onClick={handleVoiceInput}
+            className={`p-2 rounded-full hover:bg-gray-100 transition-colors ${
+              isListening ? 'bg-blue-100' : ''
+            }`}
+          >
+            <Mic className="w-6 h-6 text-gray-600" />
+          </button>
+          <button
+            onClick={handleSendMessage}
+            className="p-2 rounded-full bg-blue-500 hover:bg-blue-600 transition-colors"
+          >
+            <Send className="w-6 h-6 text-white" />
+          </button>
+        </div>
+      </div>
+    </div>
+>>>>>>> 4e3a27c400f15b453e8f827c4f84a02e3a76f6e3
   );
 }

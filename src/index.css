@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+<<<<<<< HEAD
 
 /* Custom Scrollbar Styles */
 .scrollbar-custom {
@@ -54,3 +55,5 @@ html {
 .rotate-y-180 {
   transform: rotateY(180deg);
 }
+=======
+>>>>>>> 4e3a27c400f15b453e8f827c4f84a02e3a76f6e3
